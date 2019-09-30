@@ -1,4 +1,5 @@
 import React from "react";
+import { Item } from "./Item";
 import Loader from "./Loader";
 
 export default class ViewComponent extends React.Component {
@@ -35,30 +36,7 @@ export default class ViewComponent extends React.Component {
         {isLoading ? (
           <Loader />
         ) : (
-          items.map(item => (
-            <div
-              key={item.data.id}
-              style={{
-                border: "1px solid black",
-                marginBottom: "10px",
-                padding: "5px"
-              }}
-            >
-              {item.data.thumbnail ? (
-                <img src={item.data.thumbnail} alt="" />
-              ) : null}
-
-              <p>{item.data.title}</p>
-              <p>Number of comments: {item.data.num_comments}</p>
-              <a
-                href={`https://www.reddit.com/${item.data.permalink}`}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Link
-              </a>
-            </div>
-          ))
+          items.map(item => <Item key={item.data.id} data={item.data} />)
         )}
       </div>
     );
