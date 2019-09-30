@@ -87,10 +87,12 @@ export default class ViewComponent extends React.Component {
         </div>
         {isLoading ? (
           <Loader />
-        ) : (
+        ) : itemsSortByComments.length > 0 ? (
           itemsSortByComments.map(item => (
             <Item key={item.data.id} data={item.data} />
           ))
+        ) : (
+          <p>No results found matching your criteria</p>
         )}
       </div>
     );
