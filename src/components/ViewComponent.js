@@ -1,6 +1,7 @@
 import React from "react";
 import { Item } from "./Item";
 import Loader from "./Loader";
+import { getIterator } from "core-js";
 
 export default class ViewComponent extends React.Component {
   constructor() {
@@ -8,11 +9,16 @@ export default class ViewComponent extends React.Component {
 
     this.state = {
       items: [],
-      isLoading: false
+      isLoading: false,
+      enableAutoRefresh: false
     };
   }
 
   componentDidMount() {
+    this.getItems();
+  }
+
+  getItems = () => {
     this.setState({
       isLoading: true
     });
@@ -26,10 +32,25 @@ export default class ViewComponent extends React.Component {
           isLoading: false
         });
       });
-  }
+  };
+
+  updateAutoRefresh = () => {
+    this.setState(
+      state => ({
+        enableAutoRefresh: !state.enableAutoRefresh
+      }),
+      () => {
+        if (this.state.enableAutoRefresh) {
+          this.autoreRefresh = setInterval(this.getItems, 3000);
+        } else {
+          clearInterval(this.autoreRefresh);
+        }
+      }
+    );
+  };
 
   render() {
-    const { items, isLoading } = this.state;
+    const { items, isLoading, enableAutoRefresh } = this.state;
     //sorting by data
     const itemsSortByComments = items.sort(
       (a, b) => b.data.num_comments - a.data.num_comments
@@ -37,6 +58,13 @@ export default class ViewComponent extends React.Component {
     return (
       <div>
         <h1>Top commented.</h1>
+        <button
+          type="button"
+          style={{ marginBotto: "15px" }}
+          onClick={this.updateAutoRefresh}
+        >
+          {enableAutoRefresh ? "Stop" : "Start"} auto-refresh
+        </button>
         {isLoading ? (
           <Loader />
         ) : (
