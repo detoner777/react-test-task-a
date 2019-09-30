@@ -10,7 +10,8 @@ export default class ViewComponent extends React.Component {
     this.state = {
       items: [],
       isLoading: false,
-      enableAutoRefresh: false
+      enableAutoRefresh: false,
+      minComments: 0
     };
   }
 
@@ -49,22 +50,41 @@ export default class ViewComponent extends React.Component {
     );
   };
 
+  updateMinComments = e => {
+    this.setState({
+      minComments: Number(e.target.value)
+    });
+  };
+
   render() {
-    const { items, isLoading, enableAutoRefresh } = this.state;
-    //sorting by data
-    const itemsSortByComments = items.sort(
-      (a, b) => b.data.num_comments - a.data.num_comments
-    );
+    const { items, isLoading, enableAutoRefresh, minComments } = this.state;
+
+    const itemsSortByComments = items
+      .filter(item => item.data.num_comments >= minComments)
+      .sort((a, b) => b.data.num_comments - a.data.num_comments);
+
     return (
       <div>
         <h1>Top commented.</h1>
-        <button
-          type="button"
-          style={{ marginBotto: "15px" }}
-          onClick={this.updateAutoRefresh}
-        >
-          {enableAutoRefresh ? "Stop" : "Start"} auto-refresh
-        </button>
+        <div>
+          <p>Current filter: {minComments}</p>
+          <button
+            type="button"
+            style={{ marginBottom: "15px" }}
+            onClick={this.updateAutoRefresh}
+          >
+            {enableAutoRefresh ? "Stop" : "Start"} auto-refresh
+          </button>
+          <input
+            type="range"
+            value={minComments}
+            onChange={this.updateMinComments}
+            min={0}
+            max={500}
+            step={5}
+            style={{ width: "100%", marginBottom: "15px" }}
+          />
+        </div>
         {isLoading ? (
           <Loader />
         ) : (
