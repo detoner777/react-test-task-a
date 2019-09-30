@@ -30,13 +30,19 @@ export default class ViewComponent extends React.Component {
 
   render() {
     const { items, isLoading } = this.state;
+    //sorting by data
+    const itemsSortByComments = items.sort(
+      (a, b) => b.data.num_comments - a.data.num_comments
+    );
     return (
       <div>
         <h1>Top commented.</h1>
         {isLoading ? (
           <Loader />
         ) : (
-          items.map(item => <Item key={item.data.id} data={item.data} />)
+          itemsSortByComments.map(item => (
+            <Item key={item.data.id} data={item.data} />
+          ))
         )}
       </div>
     );

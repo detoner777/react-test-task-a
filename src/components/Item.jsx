@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Loader from "./Loader";
 
 export class Item extends Component {
   render() {
